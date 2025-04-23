@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Colors API
+  description: 色API
+  version: 1.0.0
+servers:
+  - url: http://localhost:7777
+
+# components セクションを追加し、スキーマを定義
+components:
+  schemas:
+    # 成功レスポンス (200) のスキーマ
+    ColorListResponse:
+      description: 色の文字列の配列
+      type: array
+      items:
+        type: string
+      example: ["red", "green", "blue"] # スキーマレベルで Example を定義
+
+    # エラーレスポンス (500など) の共通スキーマ
+    ErrorResponse:
+      description: 標準的なエラーレスポンス
+      type: object
+      properties:
+        message:
+          type: string
+          description: エラーの詳細メッセージ
+      required: # message は必須とする場合
+        - message
+      example: # スキーマレベルで Example を定義
+        message: Internal Server Error
+
+paths:
+  /api/colors:
+    get:
+      summary: 色の一覧を返す
+      description: 色を含む配列を取得します
+      operationId: getApiColors # Orval で生成される関数名を明示的に指定 (推奨)
+      tags: # APIのグルーピング用 (任意)
+        - Colors
+      responses:
+        # 200 レスポンス: components/schemas/ColorListResponse を参照
+        "200":
+          description: 色の配列 (成功)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ColorListResponse" # $ref で参照
+
+        # 500 レスポンス: components/schemas/ErrorResponse を参照
+        "500":
+          description: サーバーエラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse" # $ref で参照
